@@ -1,4 +1,5 @@
 import numpy as np
+from pylab import *
 from common import *
 
 def findedges(mask):
@@ -41,20 +42,32 @@ class ImageClass(object):
         print '-- Loading Blue Channel --'
         self.b = getImageAsArray(b)
         print '-- Loading Myocyte Mask --'
-        self.myocytes = getImageAsArray(myo)[:,:,0]
+        self.myocytes = getImageAsArray(myo)
         print '-- Loading Nucleotide Mask --'
-        self.nucleotides = getImageAsArray(nuc)[:,:,0]
+        self.nucleotides = getImageAsArray(nuc)
         m,n=self.r.shape
         self.img = np.zeros([m,n,5])
         self.img[:,:,0]=self.r
         self.img[:,:,1]=self.g
         self.img[:,:,2]=self.b
-        self.img[:,:,3]=self.myo
-        self.img[:,:,4]=self.nuc
+        self.img[:,:,3]=self.myocytes
+        self.img[:,:,4]=self.nucleotides
         self.myocyteobjects = []
+        self.nucleusobjects = []
         for i in xrange(1,self.myocytes.max()):
             mask = self.myocytes == i
             top,bottom,left,right = findedges(mask)
+            print "-- Object",i,"found at",top,bottom,left,right,"--"
+            self.myocyteobjects.append(ImageObject(self.img[top:bottom,left:right,:],top,bottom,left,right))
+            imshow(self.img[top:bottom,left:right,[0, 1, 2]].astype(int8))
+            show()
+        for i in xrange(1,self.nucleotides.max()):
+            mask = self.nucleotides == i
+            top,bottom,left,right = findedges(mask)
+            print "-- Object",i,"found at",top,bottom,left,right,"--"
+            self.nucleusobjects.append(ImageObject(self.img[top:bottom,left:right,:],top,bottom,left,right))
+            imshow(self.img[top:bottom,left:right,[0, 1, 2]].astype(int16))
+            show()
 
 class ImageObject(object):
 

@@ -1,7 +1,7 @@
 import Image
 import numpy as np
 from scipy.misc import imsave
-from cv2 import imread
+import cv2
 tab='\t'
 RED=0
 GREEN=1
@@ -14,7 +14,7 @@ def Imagetoarray(img):
     return np.array(img)
 
 def getImageAsArray(path):
-    return imread(path,-1)
+    return cv2.imread(path,-1)
 
 def savearray(arr,path):
     imsave(path,arr)
